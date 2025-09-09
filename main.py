@@ -19,7 +19,22 @@ parameters = {
 
 response = requests.get("https://www.alphavantage.co/query", params=parameters)
 data = response.json()
-print(data)
+
+time_series = data["Time Series (Daily)"]
+dates = sorted(time_series.keys(), reverse=True)
+
+yesterday = dates[0]
+day_before_yesterday = dates[1]
+
+stock_yesterday = float(time_series[yesterday]["4. close"])
+stock_day_before = float(time_series[day_before_yesterday]["4. close"])
+percentage_change = ((stock_yesterday - stock_day_before) / stock_day_before) * 100
+
+print(percentage_change)
+
+if abs(percentage_change) >= 5:
+    print("Get News 📰")
+
 
 ## STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
