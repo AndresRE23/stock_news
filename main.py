@@ -14,9 +14,6 @@ parameters = {
     "apikey": api_stock_key
 }
 
-## STEP 1: Use https://www.alphavantage.co
-# When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
-
 response = requests.get("https://www.alphavantage.co/query", params=parameters)
 data = response.json()
 
