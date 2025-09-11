@@ -1,3 +1,4 @@
+import datetime
 import os
 from dotenv import load_dotenv
 import requests
@@ -5,6 +6,7 @@ import requests
 load_dotenv()
 
 api_stock_key = os.getenv("API_STOCK_KEY")
+api_news_key =  os.getenv("API_NEWS_KEY")
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
 
@@ -27,14 +29,20 @@ stock_yesterday = float(time_series[yesterday]["4. close"])
 stock_day_before = float(time_series[day_before_yesterday]["4. close"])
 percentage_change = ((stock_yesterday - stock_day_before) / stock_day_before) * 100
 
-print(percentage_change)
+if abs(percentage_change) >= 0:
+    parameters = {
+        "q": COMPANY_NAME,
+        "from": (datetime.datetime.now() - datetime.timedelta(days=7)).date().isoformat(),
+        "sortBy": "publishedAt",
+        "pageSize": 3,
+        "language": "en",
+        "apiKey": api_news_key
+    }
 
-if abs(percentage_change) >= 5:
-    print("Get News 📰")
+    response = requests.get("https://newsapi.org/v2/everything", params=parameters)
+    articles = response.json()["articles"]
+    print(articles)
 
-
-## STEP 2: Use https://newsapi.org
-# Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
 
 ## STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
